@@ -30,15 +30,18 @@ public class ServletLogin extends HttpServlet {
     ArrayList<String> args = new ArrayList();
     args.add(user_email);
     args.add(pass);
-    String sql = "select * from Usuarios where email = ? and contrasenha = ?;";
+    String sql = "select * from Usuarios where nombre_usuario = ? and contrasenha = ?;";
     ManagerDB man = new ManagerDB();
     man.consultar(sql, args);
     if(man.getResult().next()){
         u.setId_usuario(man.getResult().getInt("id_usuario"));
         u.setNombre(man.getResult().getString("nombre"));
         u.setApellido(man.getResult().getString("apellido"));
+        u.setNombre_usuario(man.getResult().getString("nombre_usuario"));
         u.setEmail(man.getResult().getString("email"));
+        u.setDireccion(man.getResult().getString("direccion"));
         u.setContrasenha(man.getResult().getString("contrasenha")); 
+        u.setRol(man.getResult().getString("rol"));
     }
 
     return u;
@@ -57,14 +60,14 @@ public class ServletLogin extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            RequestDispatcher dispatcher = null;
+            RequestDispatcher dispatcher = request.getRequestDispatcher("Login.jsp");
             String lastpage = request.getParameter("lastpage");
-            Usuario u = comprobarLogin(request.getParameter("user_email"),request.getParameter("pass"));
-            if (u.getEmail() != null){
+            Usuario u = comprobarLogin(request.getParameter("nombre_usuario"),request.getParameter("pass"));
+            if (u.getNombre_usuario() != null){
                 request.getSession(true).setAttribute("user", u); //se setea la sesion con el username registrado
                 if(lastpage != null && lastpage.equals("Carrito")) dispatcher = request.getRequestDispatcher("Carrito.jsp");
                 else dispatcher = request.getRequestDispatcher("Login.jsp");
-                if(u.getRol() == "A") request.getSession(true).setAttribute("admin", "si");
+                if(u.getRol().equals("A")) request.getSession(true).setAttribute("admin", "si");
                  
                 //a la pagina de donde se vino
             }else{

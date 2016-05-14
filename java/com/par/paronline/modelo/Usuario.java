@@ -17,6 +17,7 @@ public class Usuario implements Serializable{
     private int id_usuario;
     private String nombre;
     private String apellido;
+    private String nombre_usuario;//agregamos a la tabla la columna nombre_usuario asi como en el modelo que representa la tabla
     private String contrasenha;
     private String direccion;
     private String email;
@@ -45,7 +46,15 @@ public class Usuario implements Serializable{
     public void setApellido(String apellido) {
         this.apellido = apellido;
     }
+    //metodos getters y setters para el atributo nombre_usuario
+    public String getNombre_usuario() {
+        return nombre_usuario;
+    }
 
+    public void setNombre_usuario(String nombre_usuario) {
+        this.nombre_usuario = nombre_usuario;
+    }
+    
     public String getContrasenha() {
         return contrasenha;
     }

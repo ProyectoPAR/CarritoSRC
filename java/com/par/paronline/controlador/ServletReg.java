@@ -24,9 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "ServletReg", urlPatterns = {"/Reg"})
 public class ServletReg extends HttpServlet {
     
-    public String validarRegistro(String id_usuario, String email){
+    public String validarRegistro(String email){
         String msg;
-        msg = ABMCliente.verificarEmail(email) + ABMCliente.verificarId(id_usuario);
+        msg = ABMCliente.verificarEmail(email);
         return msg; 
     }
 
@@ -39,17 +39,18 @@ public class ServletReg extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            String mensaje = validarRegistro(request.getParameter("usuario"),request.getParameter("email"));
+            String mensaje = validarRegistro(request.getParameter("email"));
             if(mensaje.length() == 0){
                 Usuario u = new Usuario();
                 u.setNombre(request.getParameter("nombre"));
                 u.setApellido(request.getParameter("apellido"));
                 u.setDireccion(request.getParameter("direccion"));
+                u.setNombre_usuario(request.getParameter("nombre_usuario"));//obtenemos del jsp el nombre usuario y se setea al objeto u
                 u.setEmail(request.getParameter("email"));
                 u.setRol("U");
                 u.setContrasenha(request.getParameter("contrasenha"));
                 ABMCliente.agregar(u);
-                request.getSession().setAttribute("user", u.getId_usuario());
+                request.getSession().setAttribute("user", u);
                 response.sendRedirect("MenuPrincipal.jsp");
             }else{
                 out.print("fallo intento de registro");
