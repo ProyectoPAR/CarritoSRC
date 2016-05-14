@@ -76,7 +76,7 @@ public class ABMCliente {
         }catch(Exception e){System.out.println("Error al guardar usuario:"+e);}
     }
     
-    public static void actualizar (Usuario u, String mail) throws SQLException, Exception{
+    public static void actualizar (Usuario u) throws SQLException, Exception{
         ManagerDB db = new ManagerDB();
         PreparedStatement stmt = db.getPrepareStatement("update usuarios set"
                 + "nombre = ?,apellido = ?,contrasenha = ? ,direccion = ? where email = ?");

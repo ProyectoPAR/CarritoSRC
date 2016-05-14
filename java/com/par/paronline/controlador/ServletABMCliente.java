@@ -35,7 +35,7 @@ public class ServletABMCliente extends HttpServlet {
         u.setEmail(request.getParameter("email"));
         u.setContrasenha(request.getParameter("contrasenha"));
         
-        ABMCliente.actualizar(u, u.getId_usuario(), u.getEmail());
+        ABMCliente.actualizar(u);
         response.sendRedirect("ABMCliente.jsp");
     }
    
