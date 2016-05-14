@@ -115,19 +115,27 @@ public class ABMCliente {
         db.cerrarConexion();
     } 
     
-    public static boolean verificarEmail(String email){
-        String sql = "select email from usuarios where email = ?";
-      
-        try{
+    public static boolean verificarEmail(String email) throws NamingException, Exception{
+        String sql = "select * from usuarios where email = ?";
         ManagerDB db = new ManagerDB();
-        PreparedStatement stmt = db.getPrepareStatement(sql);
-        stmt.setString(1,email);
-        db.iduquery(stmt);
+        ArrayList<String> args = new ArrayList();
+        args.add(email);
+        db.consultar(sql, args);
+        if(db.getResult().next()){
+            return true;
+        }      
+        return false;
+    }
+    
+    public static boolean verificarNombreUsuario(String nombre_usuario) throws NamingException, Exception{
+        String sql = "select * from usuarios where nombre_usuario = ?";
+        ManagerDB db = new ManagerDB();
+        ArrayList<String> args = new ArrayList();
+        args.add(nombre_usuario);
+        db.consultar(sql, args);
         if(db.getResult().next()){
             return true;
         }
-        }catch(Exception e){System.out.print("Error:"+e);}      
-        
         return false;
     }
             

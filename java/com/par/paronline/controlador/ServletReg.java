@@ -23,24 +23,17 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "ServletReg", urlPatterns = {"/Reg"})
 public class ServletReg extends HttpServlet {
-    
-    public String validarRegistro(String email){
-        String msg;
-        msg = ABMCliente.verificarEmail(email);
-        return msg; 
-    }
-
-    
    
-
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            String mensaje = validarRegistro(request.getParameter("email"));
-            if(mensaje.length() == 0){
+            if(!ABMCliente.verificarEmail(request.getParameter("email")) && 
+            !ABMCliente.verificarNombreUsuario(request.getParameter("nombre_usuario"))){
+                //si es que no existe el mail y el user procedera al registro
+                //pendiente la pagina de error que mostrara si no pasa la validacion
                 Usuario u = new Usuario();
                 u.setNombre(request.getParameter("nombre"));
                 u.setApellido(request.getParameter("apellido"));
