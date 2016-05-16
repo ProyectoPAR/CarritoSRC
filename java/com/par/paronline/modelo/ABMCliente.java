@@ -27,6 +27,7 @@ public class ABMCliente {
             u.setId_usuario(db.getResult().getInt("id_usuario"));
             u.setNombre(db.getResult().getString("nombre"));
             u.setApellido(db.getResult().getString("apellido"));
+            u.setNombre_usuario(db.getResult().getString("nombre_usuario"));
             u.setDireccion(db.getResult().getString("direccion"));
             u.setEmail(db.getResult().getString("email"));
             u.setRol(db.getResult().getString("rol"));
