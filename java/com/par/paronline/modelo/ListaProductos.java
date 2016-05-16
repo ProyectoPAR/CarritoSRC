@@ -91,6 +91,7 @@ public class ListaProductos{
             Double precio = man.getResult().getDouble("precio_unitario");
             this.addProducto(new Producto(id_producto, categoria,descripcion_prod,precio));
         }   
+        man.cerrarConexion();
     }
     public double getMonto_total(){
         double monto = 0.0;

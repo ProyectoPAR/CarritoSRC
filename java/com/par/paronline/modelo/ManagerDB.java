@@ -44,14 +44,14 @@ public class ManagerDB {
     
     
     public void consultar(String query) throws SQLException, ClassNotFoundException{
-        this.statement = this.conexion.prepareStatement(query);
+        this.statement = this.getPrepareStatement(query);
         this.result = this.statement.executeQuery();
         
     }
     
     public void consultar(String query, ArrayList args) throws SQLException, ClassNotFoundException{
         
-        this.statement = this.conexion.prepareStatement(query);
+        this.statement = this.getPrepareStatement(query);
         for(int i = 0 ; i < args.size() ; i ++){
             if(args.get(i).getClass().getName().equals("java.lang.String"))
                 this.statement.setString(i + 1, (String)args.get(i));
@@ -79,10 +79,12 @@ public class ManagerDB {
         return this.statement;
     }
     
+    public void closeStatement(PreparedStatement statement) throws SQLException{
+        statement.close();
+    }
+    
     public void iduquery (PreparedStatement sentencia)throws SQLException, ClassNotFoundException{
         sentencia.executeUpdate();
-        sentencia.close();
-        Conexion.closeConexion(this.conexion);
     }
     //esta funcion se encarga de insertar la cabecera de una compra desde el mismo manager, por lo que usa objetos de la misma instancia
     public int insertar_compra(Compra compra) throws SQLException, ClassNotFoundException{
@@ -97,7 +99,6 @@ public class ManagerDB {
         this.statement.executeUpdate();
         this.statement.getGeneratedKeys().next();
         id_compra = Integer.parseInt(this.statement.getGeneratedKeys().getString("id_compra"));
-        this.statement.close();
         return id_compra;
     }
     
@@ -108,7 +109,6 @@ public class ManagerDB {
         this.statement.setInt(2, id_producto);
         this.statement.setInt(3, cantidad);
         this.iduquery(this.statement);
-        this.statement.close();
     }
     
     public int getId_compra(ArrayList args) throws SQLException, ClassNotFoundException{

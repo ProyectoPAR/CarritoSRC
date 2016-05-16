@@ -91,7 +91,7 @@ public class Compra {
     }
 
     public ListaProductos getProductos() {
-        return productos;
+        return this.productos;
     }
 
     public void setProductos(ListaProductos productos) {
@@ -103,22 +103,23 @@ public class Compra {
      */
     public static ListaProductos getComprasDetalle(Integer id_compra) throws NamingException, Exception{
         ArrayList args = new ArrayList();
+        ListaProductos productos_comprados = new ListaProductos();
         ListaProductos productos = new ListaProductos();
+        productos.getListaProductos("all", "");
         args.add(id_compra);
-        //este select trae el id, descripcion, precio, categoria y cantidad comprada de un producto en una compra realizada
-        String query = "select p.id_producto idp, p.descripcion desp, p.precio_unitario precio, c.descripcion cat, cd.cantidad can"
-                + "  from Compras_detalle cd, Productos p, Categorias c where cd.id_producto = p.id_producto "
-                + "and c.id_categoria = p.id_categoria and id_compra = ?";
+        //este select trae todos los detalles en una compra realizada
+        String query = "select * from Compras_detalle where id_compra = ?";
         ManagerDB man = new ManagerDB();
         man.consultar(query, args);//hacemos la consulta
         while(man.getResult().next()){
-            //cargamos cada producto en la lista
-            Producto p = new Producto(man.getResult().getInt("idp"), man.getResult().getString("cat"), man.getResult().getString("desp"),man.getResult().getDouble("precio"));
-            p.setCantidad_compra(man.getResult().getInt("can"));
-            productos.addProducto(p);
+            //cargamos cada producto buscando por su id en la lista de producto, el id lo obtenemos en cada fila de compra detalle
+            Producto p = productos.buscarId(man.getResult().getInt("id_producto"));
+            p.setCantidad_compra(man.getResult().getInt("cantidad"));
+            //System.out.println("Producto: "+p);
+            productos_comprados.addProducto(p);
         }
         man.cerrarConexion();//cerramos la conexion y retornamos la lista de productos
-        return productos;
+        return productos_comprados;
     }
     
     public static ArrayList<Compra> getComprasCliente(Integer id_usuario) throws NamingException, Exception{
@@ -132,11 +133,16 @@ public class Compra {
             //cargamos una por una las compras realizadas por el usuario
             Compra compra = new Compra(man.getResult().getInt("id_compra"),man.getResult().getInt("id_usuario"), man.getResult().getDate("fecha"),man.getResult().getString("forma_pago"));
             compra.setMonto_total(man.getResult().getDouble("monto_total"));
+            //System.out.println("Compra: "+compra);
             compra.setProductos(Compra.getComprasDetalle(compra.getId_compra()));//cargamos los productos de la compra, haciendo uso de una funcion definida en la propia clase
             compras.add(compra);
         }
         man.cerrarConexion();//cerramos la conexion y retornamos la lista de compras de un usuario
         return compras;
+    }
+    
+    public String toString(){
+        return Integer.toString(this.getId_compra()) + " " + Integer.toString(this.getId_usuario()) + " "+ Double.toString(this.getMonto_total());
     }
     
 }

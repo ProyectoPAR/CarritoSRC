@@ -71,7 +71,6 @@ public class ListaCategorias {
             String descripcion = man.getResult().getString("descripcion");
             this.addCategoria(new Categoria(id_categoria,descripcion));
         }
-        
-        
+        man.cerrarConexion();
     }
 }

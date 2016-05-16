@@ -68,6 +68,6 @@ public class Producto implements java.io.Serializable {
     
     
     public String toString(){
-        return this.categoria + this.descripcion + this.precio;
+        return this.categoria + this.descripcion + this.precio + this.getCantidad_compra();
     }
 }

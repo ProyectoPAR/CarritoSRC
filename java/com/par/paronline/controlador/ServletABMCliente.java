@@ -41,8 +41,8 @@ public class ServletABMCliente extends HttpServlet {
    
     public void eliminar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception{
-        
-        ABMCliente.borrarUsuario(request.getParameter("id"));
+        //todos los id deben ser casteados a Integer o int
+        ABMCliente.borrarUsuario(Integer.parseInt(request.getParameter("id")));
         response.sendRedirect("ABMCliente.jsp");
     }
     

@@ -50,7 +50,7 @@ public class ABMCliente {
         //MANAGERDB
         Usuario u = null;
         ManagerDB db = new ManagerDB();
-        String query = "select * from usuarios where id_usuario ="+id_usuario;
+        String query = "select * from usuarios where id_usuario = "+id_usuario;
         db.consultar(query);
         if(db.getResult().next()){
             u = new Usuario();
@@ -61,16 +61,14 @@ public class ABMCliente {
             u.setDireccion(db.getResult().getString("direccion"));
             u.setContrasenha(db.getResult().getString("contrasenha"));
             u.setNombre_usuario(db.getResult().getString("nombre_usuario"));//AGREGADO EL NOMBRE DE USUARIO
-            return u;
         }
+        db.cerrarConexion();
         return u;
     }
     
-    public static void agregar(Usuario u){
-        try{
+    public static void agregar(Usuario u) throws NamingException, Exception{
         ManagerDB db = new ManagerDB();
         String sql = "insert into usuarios(nombre,apellido,contrasenha,direccion,email,rol,nombre_usuario) values (?,?,?,?,?,?,?)";
-        db.getPrepareStatement(sql);
         PreparedStatement stmt = db.getPrepareStatement(sql);
         stmt.setString(1,u.getNombre());
         stmt.setString(2,u.getApellido());
@@ -79,15 +77,14 @@ public class ABMCliente {
         stmt.setString(5,u.getEmail());
         stmt.setString(6,u.getRol());
         stmt.setString(7,u.getNombre_usuario());
-        
         db.iduquery(stmt);
+        db.closeStatement(stmt);
         db.cerrarConexion();
-        }catch(Exception e){System.out.println("Error al guardar usuario:"+e);}
     }
     
     public static void actualizar (Usuario u) throws SQLException, Exception{
         ManagerDB db = new ManagerDB();
-        String sql = "update usuarios set"
+        String sql = "update usuarios set "
                 + "nombre = ?, apellido = ?, contrasenha = ? , direccion = ? "
                 + "where id_usuario = ?";
         PreparedStatement stmt = db.getPrepareStatement(sql);
@@ -96,13 +93,14 @@ public class ABMCliente {
         stmt.setString(3,u.getContrasenha());
         stmt.setString(4,u.getDireccion());
         stmt.setInt(5,u.getId_usuario());
-        stmt.executeUpdate();
+        db.iduquery(stmt);
+        db.closeStatement(stmt);
+        db.cerrarConexion();
     }
     
-    public boolean existeUsuario(String email) {
+    public boolean existeUsuario(String email) throws NamingException, Exception {
         boolean existe = false;
         String sql = "select * from usuario where email = ?;";
-        try{
         ManagerDB db = new ManagerDB();
         PreparedStatement stmt = db.getPrepareStatement(sql);
         stmt.setString(1,email);
@@ -111,8 +109,7 @@ public class ABMCliente {
             existe = true;
             return existe;
         }
-        }catch(Exception e){System.out.print("Error:"+e);}
-        
+        db.cerrarConexion();
         return existe;
     }
     
@@ -134,10 +131,9 @@ public class ABMCliente {
         ArrayList<String> args = new ArrayList();
         args.add(email);
         db.consultar(sql, args);
-        if(db.getResult().next()){
-            return true;
-        }      
-        return false;
+        Boolean existe = db.getResult().next();
+        db.cerrarConexion();
+        return existe;
     }
     
     public static boolean verificarNombreUsuario(String nombre_usuario) throws NamingException, Exception{
@@ -146,14 +142,13 @@ public class ABMCliente {
         ArrayList<String> args = new ArrayList();
         args.add(nombre_usuario);
         db.consultar(sql, args);
-        if(db.getResult().next()){
-            return true;
-        }
-        return false;
+        Boolean existe = db.getResult().next();//el result.next() trae un valor booleano true si hay resultado y false en caso contrario
+        db.cerrarConexion();
+        return existe;
     }
             
     
-        
+    //deberia comprobarse por nombre de usuario    
     public static Usuario comprobarLogin(String email, String contrasenha) throws ClassNotFoundException, NamingException, Exception{
         ManagerDB db = new ManagerDB();
         Usuario u = null;
