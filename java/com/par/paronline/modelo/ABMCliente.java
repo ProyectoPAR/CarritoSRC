@@ -3,6 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
+/*LISTA DE CAMBIOS:
+    *CAMBIADO EL METODO DE BORRAR
+    *NO FUNCIONA EL METODO DE ACTUALIZAR DA UN ERROR RELACIONADO CON
+    LA SENTENCIA SQL,DEBE REVISARSE
+*/
 package com.par.paronline.modelo;
 
 
@@ -30,6 +36,7 @@ public class ABMCliente {
             u.setDireccion(db.getResult().getString("direccion"));
             u.setEmail(db.getResult().getString("email"));
             u.setRol(db.getResult().getString("rol"));
+            u.setNombre_usuario(db.getResult().getString("nombre_usuario"));//AGREGADO EL NOMBRE DE USUARIO
             usuarios.add(u);
         }
         db.cerrarConexion();
@@ -37,11 +44,13 @@ public class ABMCliente {
     }
     
     public static Usuario buscarUsuario(int id_usuario) throws ClassNotFoundException, SQLException, Exception{
+        //CAMBIADO EL METODO DE CONSULTA, LO QUE GENERABA UN ERROR A LA HORA DE 
+        //USAR ESTE METODO, AHORA SE USA EL METODO CONSULTAR() DE 
+        //MANAGERDB
         Usuario u = null;
         ManagerDB db = new ManagerDB();
-        PreparedStatement stmt = db.getPrepareStatement("select * from usuarios where id_usuario = ?");
-        stmt.setInt(1,id_usuario);
-        db.iduquery(stmt);
+        String query = "select * from usuarios where id_usuario ="+id_usuario;
+        db.consultar(query);
         if(db.getResult().next()){
             u = new Usuario();
             u.setId_usuario(db.getResult().getInt("id_usuario"));
@@ -50,7 +59,7 @@ public class ABMCliente {
             u.setEmail(db.getResult().getString("email"));
             u.setDireccion(db.getResult().getString("direccion"));
             u.setContrasenha(db.getResult().getString("contrasenha"));
-            
+            u.setNombre_usuario(db.getResult().getString("nombre_usuario"));//AGREGADO EL NOMBRE DE USUARIO
             return u;
         }
         return u;
@@ -77,14 +86,16 @@ public class ABMCliente {
     
     public static void actualizar (Usuario u) throws SQLException, Exception{
         ManagerDB db = new ManagerDB();
-        PreparedStatement stmt = db.getPrepareStatement("update usuarios set"
-                + "nombre = ?,apellido = ?,contrasenha = ? ,direccion = ? where email = ?");
+        String sql = "update usuarios set"
+                + "nombre = ?, apellido = ?, contrasenha = ? , direccion = ? "
+                + "where id_usuario = ?";
+        PreparedStatement stmt = db.getPrepareStatement(sql);
         stmt.setString(1,u.getNombre());
         stmt.setString(2,u.getApellido());
         stmt.setString(3,u.getContrasenha());
         stmt.setString(4,u.getDireccion());
-        db.iduquery(stmt);
-        db.cerrarConexion();
+        stmt.setInt(5,u.getId_usuario());
+        stmt.executeUpdate();
     }
     
     public boolean existeUsuario(String email) {
@@ -104,11 +115,13 @@ public class ABMCliente {
         return existe;
     }
     
-    public static void borrarUsuario(String email) throws SQLException, Exception{
+    public static void borrarUsuario(int id) throws SQLException, Exception{
+        //ESTE METODO AHORA BUSCA MEDIANTE EL ID NUMERICO, ANTES LO HACIA POR EL
+        //EMAIL
         ManagerDB db = new ManagerDB();
-        String sql = "delete from usuarios where email =?";
+        String sql = "delete from usuarios where id_usuario =?";
         PreparedStatement stmt = db.getPrepareStatement(sql);
-        stmt.setString(1,email);
+        stmt.setInt(1,id);
         stmt.executeUpdate();
         stmt.close();
         db.cerrarConexion();
