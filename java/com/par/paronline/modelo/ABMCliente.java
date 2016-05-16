@@ -19,7 +19,7 @@ public class ABMCliente {
 
     public static ArrayList<Usuario> listar() throws SQLException, Exception{
         ManagerDB db = new ManagerDB();
-        String sql = "select id_usuario,nombre,apellido,email from usuarios;";
+        String sql = "select * from Usuarios;";
         ArrayList<Usuario> usuarios = new ArrayList();
         db.consultar(sql);
         while(db.getResult().next()){
@@ -30,18 +30,17 @@ public class ABMCliente {
             u.setDireccion(db.getResult().getString("direccion"));
             u.setEmail(db.getResult().getString("email"));
             u.setRol(db.getResult().getString("rol"));
-            
             usuarios.add(u);
         }
         db.cerrarConexion();
         return usuarios;
     }
     
-    public static Usuario buscarUsuario(String email) throws ClassNotFoundException, SQLException, Exception{
+    public static Usuario buscarUsuario(int id_usuario) throws ClassNotFoundException, SQLException, Exception{
         Usuario u = null;
         ManagerDB db = new ManagerDB();
-        PreparedStatement stmt = db.getPrepareStatement("select*from usuarios where email =?");
-        stmt.setString(1,email);
+        PreparedStatement stmt = db.getPrepareStatement("select * from usuarios where id_usuario = ?");
+        stmt.setInt(1,id_usuario);
         db.iduquery(stmt);
         if(db.getResult().next()){
             u = new Usuario();

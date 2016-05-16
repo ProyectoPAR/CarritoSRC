@@ -10,13 +10,14 @@ package com.par.paronline.modelo;
  * @author root
  */
 public class Categoria {
-    private String id_categoria, descripcion;
+    private String descripcion;
+    private Integer id_categoria;
 
-    public String getId_categoria() {
+    public Integer getId_categoria() {
         return this.id_categoria;
     }
 
-    public void setId_categoria(String id_categoria) {
+    public void setId_categoria(Integer id_categoria) {
         this.id_categoria = id_categoria;
     }
 
@@ -28,7 +29,7 @@ public class Categoria {
         this.descripcion = descripcion;
     }
 
-    public Categoria(String id_categoria, String descripcion) {
+    public Categoria(Integer id_categoria, String descripcion) {
         this.id_categoria = id_categoria;
         this.descripcion = descripcion;
     }

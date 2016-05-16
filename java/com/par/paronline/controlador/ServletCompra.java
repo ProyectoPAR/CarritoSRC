@@ -70,11 +70,12 @@ public class ServletCompra extends HttpServlet {
             String forma_pago = (String) request.getParameter("forma_pago");
             Date fecha_hoy = new Date();
             Compra compra = new Compra(user.getId_usuario(),fecha_hoy,forma_pago);//provicionalmente enviamos 2, es el unico cliente
+            compra.setMonto_total(carrito.getMonto_total());
             int id_compra = man.insertar_compra(compra);//se inserta la compra desde el manager, ahora el detalle de la compra
             man = new ManagerDB();
             for(int i = 0 ; i < carrito.size() ; i ++){
                 //por cada producto del carrito insertaremos el producto y la cantidad comprada en la tabla compra_detalle con un unico id de compra
-                man.insertar_compra_detalle(id_compra, Integer.parseInt(carrito.get(i).getId_producto()),carrito.get(i).getCantidad_compra());
+                man.insertar_compra_detalle(id_compra, carrito.get(i).getId_producto(),carrito.get(i).getCantidad_compra());
                 man = new ManagerDB();
             }
             man.cerrarConexion();

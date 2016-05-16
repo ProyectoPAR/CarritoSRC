@@ -61,7 +61,7 @@ public class ServletABMProducto extends HttpServlet {
                     args.add(descripcion);
                     args.add(imagen);
                     args.add(precio);
-                    args.add(Integer.parseInt(categorias.buscarDescripcion(categoria).getId_categoria()));
+                    args.add(categorias.buscarDescripcion(categoria).getId_categoria());
                     
                     abm.alta(args);
                 }
@@ -81,7 +81,7 @@ public class ServletABMProducto extends HttpServlet {
                     args.add(descripcion);
                     args.add(imagen);
                     args.add(precio);
-                    args.add(Integer.parseInt(categorias.buscarDescripcion(categoria).getId_categoria()));
+                    args.add(categorias.buscarDescripcion(categoria).getId_categoria());
                     args.add(Integer.parseInt(id_producto));
                     abm.modificar(args);
                     dispatcher = request.getRequestDispatcher("ABMProducto.jsp");

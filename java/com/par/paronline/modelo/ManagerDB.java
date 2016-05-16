@@ -28,7 +28,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import javax.naming.NamingException;
 
-
+//verificar si es necesario cerrar la conexion en cada metodo
 public class ManagerDB {
     
     private ArrayList<Producto> productos = new ArrayList<Producto>();
@@ -49,11 +49,16 @@ public class ManagerDB {
         
     }
     
-    public void consultar(String query, ArrayList<String> args) throws SQLException, ClassNotFoundException{
+    public void consultar(String query, ArrayList args) throws SQLException, ClassNotFoundException{
         
         this.statement = this.conexion.prepareStatement(query);
         for(int i = 0 ; i < args.size() ; i ++){
-            this.statement.setString(i + 1, args.get(i));
+            if(args.get(i).getClass().getName().equals("java.lang.String"))
+                this.statement.setString(i + 1, (String)args.get(i));
+            else if(args.get(i).getClass().getName().equals("java.lang.Integer"))
+                this.statement.setInt(i + 1, (Integer)args.get(i));
+            else if(args.get(i).getClass().getName().equals("java.lang.Double"))
+                this.statement.setDouble(i + 1, (Double)args.get(i));
         }
         System.out.println(query);
         this.result = this.statement.executeQuery();

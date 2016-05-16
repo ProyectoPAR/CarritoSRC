@@ -25,7 +25,7 @@ public class ListaProductos{
         this.productos.add(p);
     }
     
-    public void removeProducto(String id_producto){
+    public void removeProducto(Integer id_producto){
         Producto p = buscarId(id_producto);
         this.productos.remove(this.buscarId(id_producto));
     }
@@ -34,9 +34,9 @@ public class ListaProductos{
         this.productos.remove(p);
     }
     
-    public Producto buscarId(String id_producto){
+    public Producto buscarId(Integer id_producto){
         for (int i = 0 ; i < this.productos.size() ; i ++)
-            if (this.productos.get(i).getId_producto().equals(id_producto))
+            if (this.productos.get(i).getId_producto() == id_producto)
                 return this.productos.get(i);
         return null;//retorna null si no hay ningun producto con ese id
     }
@@ -78,22 +78,25 @@ public class ListaProductos{
             }
             if(!descripcion.equals("")){
                 query = query + " and p.descripcion like ?";
-                args.add(descripcion);
+                args.add('%'+descripcion+'%');
             }
             man.consultar(query, args);
               
         }
             
         while(man.getResult().next()){
-            String id_producto = man.getResult().getString("idp");
+            Integer id_producto = man.getResult().getInt("idp");
             categoria = man.getResult().getString("cdes");
             String descripcion_prod = man.getResult().getString("pdes");
-            String precio = man.getResult().getString("precio_unitario");
+            Double precio = man.getResult().getDouble("precio_unitario");
             this.addProducto(new Producto(id_producto, categoria,descripcion_prod,precio));
-        }
-        
-        
+        }   
     }
-    
-    
+    public double getMonto_total(){
+        double monto = 0.0;
+        for (int i = 0 ; i < this.size() ; i ++){
+            monto += (this.get(i).getPrecio()*this.get(i).getCantidad_compra());
+        }
+        return monto;
+    }
 }

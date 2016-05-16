@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 public class Usuario implements Serializable{
 
-    private int id_usuario;
+    private Integer id_usuario;
     private String nombre;
     private String apellido;
     private String nombre_usuario;//agregamos a la tabla la columna nombre_usuario asi como en el modelo que representa la tabla

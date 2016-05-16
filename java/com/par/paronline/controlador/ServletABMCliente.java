@@ -63,7 +63,7 @@ public class ServletABMCliente extends HttpServlet {
         
         if("editar".equals(accion)){
             
-            RequestDispatcher rd = request.getRequestDispatcher("/EditCliente.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("EditCliente.jsp");
             if (rd != null) {
                 rd.forward(request, response);
             }  
@@ -92,6 +92,7 @@ public class ServletABMCliente extends HttpServlet {
             processRequest(request, response);
         } catch (Exception ex) {
             Logger.getLogger(ServletABMCliente.class.getName()).log(Level.SEVERE, null, ex);
+            response.getWriter().println(ex.getMessage());
         }
     }
 

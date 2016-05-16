@@ -25,7 +25,7 @@ public class ListaCategorias {
         this.categorias.add(c);
     }
     
-    public void removeCategoria(String id_categoria){
+    public void removeCategoria(Integer id_categoria){
         Categoria p = buscarId(id_categoria);
         this.categorias.remove(this.buscarId(id_categoria));
     }
@@ -34,9 +34,9 @@ public class ListaCategorias {
         this.categorias.remove(c);
     }
     
-    public Categoria buscarId(String id_categoria){
+    public Categoria buscarId(Integer id_categoria){
         for (int i = 0 ; i < this.categorias.size() ; i ++)
-            if (this.categorias.get(i).getId_categoria().equals(id_categoria))
+            if (this.categorias.get(i).getId_categoria() == id_categoria)
                 return this.categorias.get(i);
         return null;//retorna null si no hay ningun producto con ese id
     }
@@ -67,7 +67,7 @@ public class ListaCategorias {
         man.consultar(query);
             
         while(man.getResult().next()){
-            String id_categoria = man.getResult().getString("id_categoria");
+            Integer id_categoria = man.getResult().getInt("id_categoria");
             String descripcion = man.getResult().getString("descripcion");
             this.addCategoria(new Categoria(id_categoria,descripcion));
         }

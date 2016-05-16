@@ -31,19 +31,12 @@ public class PruebaBase {
     String pass = "sate150495";
     ArrayList<Producto> productos = new ArrayList<Producto>();
     public void f() throws SQLException, ClassNotFoundException, Exception{
-            Class.forName("org.postgresql.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Tienda", "postgres", "sate150495");
-            String query = "insert into Compras (id_usuario, monto_total, fecha, forma_pago, nro_factura) values (?, ?, ?, ?, ?)";
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setInt(1,2);
-            statement.setDouble(2, 0.0);
-            java.util.Date fecha = new Date();
-            statement.setDate(3, new java.sql.Date(fecha.getYear(), fecha.getMonth(), fecha.getDay()));
-            statement.setString(4, "efectivo");
-            statement.setInt(5, 2);
-            statement.executeUpdate();
-            statement.close();
-            conn.close();
+            String cadena = "hola";
+            Integer nro = 5;
+            Double nro_double = 5.5;
+            System.out.println(cadena.getClass().getName());
+            System.out.println(nro.getClass().getName());
+            System.out.println(nro_double.getClass().getName());
     }
     public static void main(String args[]) throws SQLException, ClassNotFoundException, Exception{
         PruebaBase p = new PruebaBase();

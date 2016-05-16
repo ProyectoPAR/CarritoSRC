@@ -62,12 +62,11 @@ public class ServletLogin extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, ClassNotFoundException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        if("login".equals(request.getParameter("accion"))){ //DIFERENCIA CUANDO UN USUARIO TRATA DE LOGUEARSE O CERRAR SESION
-        
-            try (PrintWriter out = response.getWriter()) {
+        try{
+            RequestDispatcher dispatcher = request.getRequestDispatcher("Login.jsp");
+            if("login".equals(request.getParameter("accion"))){ //DIFERENCIA CUANDO UN USUARIO TRATA DE LOGUEARSE O CERRAR SESION
                 /* TODO output your page here. You may use following sample code. */
-                RequestDispatcher dispatcher = request.getRequestDispatcher("Login.jsp");
+                
                 String lastpage = request.getParameter("lastpage");
                 Usuario u = comprobarLogin(request.getParameter("nombre_usuario"),request.getParameter("pass"));
                 if (u.getNombre_usuario() != null){
@@ -75,25 +74,24 @@ public class ServletLogin extends HttpServlet {
                     if(lastpage != null && lastpage.equals("Carrito")) dispatcher = request.getRequestDispatcher("Carrito.jsp");
                     else dispatcher = request.getRequestDispatcher("MenuPrincipal.jsp");
                     if(u.getRol().equals("A")) request.getSession(true).setAttribute("admin", "si");
-
                     //a la pagina de donde se vino
                 }else{
-                    out.println("Nombre de usuario o contrasenha no validos. Intente de nuevo");
-                    RequestDispatcher rd = request.getRequestDispatcher("MenuPrincipal.jsp");
-                    rd.include(request,response);
+                    request.setAttribute("mensaje", "Nombre de Usuario o contrsenha no validos, intentelo de nuevo");
+                    dispatcher = request.getRequestDispatcher("MenuPrincipal.jsp");
+                    dispatcher.include(request,response);
                 }
-
                 dispatcher.forward(request, response);
-            } catch (Exception ex) {
-                Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println(ex.getMessage());
+            }
+
+            if("logout".equals(request.getParameter("accion"))){
+                cerrarSession(request.getSession());
+                dispatcher.forward(request, response);
+
             }
         }
-        
-        if("logout".equals(request.getParameter("accion"))){
-            cerrarSession(request.getSession());
-            response.sendRedirect("MenuPrincipal.jsp");
-            
+        catch (Exception ex) {
+                Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex.getMessage());
         }
     }
 

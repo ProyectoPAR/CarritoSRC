@@ -10,14 +10,15 @@ package com.par.paronline.modelo;
  * @author root
  */
 public class Producto implements java.io.Serializable {
-    private String id_producto,categoria, descripcion, precio;
-    private int cantidad_compra;
+    private String categoria, descripcion;
+    private Integer cantidad_compra, id_producto;
+    private Double precio;
 
-    public String getId_producto() {
+    public Integer getId_producto() {
         return id_producto;
     }
 
-    public void setId_producto(String id_producto) {
+    public void setId_producto(Integer id_producto) {
         this.id_producto = id_producto;
     }
 
@@ -37,11 +38,11 @@ public class Producto implements java.io.Serializable {
         this.descripcion = descripcion;
     }
 
-    public String getPrecio() {
+    public Double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(String precio) {
+    public void setPrecio(Double precio) {
         this.precio = precio;
     }
     
@@ -50,18 +51,18 @@ public class Producto implements java.io.Serializable {
         //Constructor sin argumentos
     }
 
-    public Producto(String id,String cat, String des, String valor){
+    public Producto(Integer id,String cat, String des, Double valor){
         this.id_producto = id;
         this.categoria = cat;
         this.descripcion = des;
         this.precio = valor;
     }
 
-    public int getCantidad_compra() {
+    public Integer getCantidad_compra() {
         return cantidad_compra;
     }
 
-    public void setCantidad_compra(int cantidad_compra) {
+    public void setCantidad_compra(Integer cantidad_compra) {
         this.cantidad_compra = cantidad_compra;
     }
     
