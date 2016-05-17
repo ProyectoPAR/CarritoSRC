@@ -62,8 +62,8 @@ public class ServletLogin extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, ClassNotFoundException {
         response.setContentType("text/html;charset=UTF-8");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("Login.jsp");
         try{
-            RequestDispatcher dispatcher = request.getRequestDispatcher("Login.jsp");
             if("login".equals(request.getParameter("accion"))){ //DIFERENCIA CUANDO UN USUARIO TRATA DE LOGUEARSE O CERRAR SESION
                 /* TODO output your page here. You may use following sample code. */
                 
@@ -76,22 +76,21 @@ public class ServletLogin extends HttpServlet {
                     if(u.getRol().equals("A")) request.getSession(true).setAttribute("admin", "si");
                     //a la pagina de donde se vino
                 }else{
-                    request.setAttribute("mensaje", "Nombre de Usuario o contrsenha no validos, intentelo de nuevo");
-                    dispatcher = request.getRequestDispatcher("MenuPrincipal.jsp");
-                    dispatcher.include(request,response);
+                    throw new Exception("Nombre de Usuario o contrsenha no validos, intentelo de nuevo");    
                 }
-                dispatcher.forward(request, response);
             }
 
             if("logout".equals(request.getParameter("accion"))){
                 cerrarSession(request.getSession());
-                dispatcher.forward(request, response);
-
             }
         }
         catch (Exception ex) {
-                Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println(ex.getMessage());
+            Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensaje_error",ex.getMessage());
+            dispatcher = request.getRequestDispatcher("Login.jsp");
+        }
+        finally{
+            dispatcher.forward(request,response);
         }
     }
 

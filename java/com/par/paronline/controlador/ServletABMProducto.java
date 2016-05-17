@@ -39,12 +39,13 @@ public class ServletABMProducto extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, ClassNotFoundException, Exception {
         response.setContentType("text/html;charset=UTF-8");
-        
+        RequestDispatcher dispatcher = null;
+        try{
             String accion = request.getParameter("accion");
             String lastpage = request.getParameter("lastpage");
             if(accion != null){
             //falta castear el precio a double
-                RequestDispatcher dispatcher =  request.getRequestDispatcher("ABMProducto.jsp");
+                dispatcher =  request.getRequestDispatcher("ABMProducto.jsp");
                 HttpSession session = request.getSession(true);
                 ListaProductos productos = (ListaProductos)session.getAttribute("lista_productos");
                 ABMProducto abm = new ABMProducto();
@@ -86,8 +87,16 @@ public class ServletABMProducto extends HttpServlet {
                     abm.modificar(args);
                     dispatcher = request.getRequestDispatcher("ABMProducto.jsp");
                 }
-                dispatcher.forward(request, response);
+                
             }
+        }
+        catch(Exception e){
+            request.setAttribute("mensaje_error", e.getMessage());
+            dispatcher = request.getRequestDispatcher("PagError.jsp");
+        }
+        finally{
+            dispatcher.forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

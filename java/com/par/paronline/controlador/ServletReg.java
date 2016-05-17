@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,12 +29,14 @@ public class ServletReg extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            if(!ABMCliente.verificarEmail(request.getParameter("email")) && 
-            !ABMCliente.verificarNombreUsuario(request.getParameter("nombre_usuario"))){
+        RequestDispatcher dispatcher = null;
+        try {
+            
+            if(!ABMCliente.verificarEmail(request.getParameter("email")) &&//deberia se existeEmail.
+            !ABMCliente.verificarNombreUsuario(request.getParameter("nombre_usuario"))){//deberia ser existeNombreUsuario.
                 //si es que no existe el mail y el user procedera al registro
                 //pendiente la pagina de error que mostrara si no pasa la validacion
+                
                 Usuario u = new Usuario();
                 u.setNombre(request.getParameter("nombre"));
                 u.setApellido(request.getParameter("apellido"));
@@ -42,12 +45,18 @@ public class ServletReg extends HttpServlet {
                 u.setEmail(request.getParameter("email"));
                 u.setRol("U");
                 u.setContrasenha(request.getParameter("contrasenha"));
-                ABMCliente.agregar(u);
-                request.getSession().setAttribute("user", u);
-                response.sendRedirect("MenuPrincipal.jsp");
-            }else{
-                out.print("fallo intento de registro");
+                Integer id_usuario = ABMCliente.agregar(u);
+                u.setId_usuario(id_usuario);
+                request.getSession().setAttribute("user", u); 
             }
+            dispatcher = request.getRequestDispatcher("index.jsp");
+        }
+        catch(Exception e){
+            dispatcher = request.getRequestDispatcher("PagError.jsp");
+            request.setAttribute("mensaje_error", e.getMessage());
+        }
+        finally{
+            dispatcher.forward(request, response);
         }
     }
 

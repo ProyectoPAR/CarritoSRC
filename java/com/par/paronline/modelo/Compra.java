@@ -16,13 +16,11 @@ import java.util.Date;
 import javax.naming.NamingException;
 
 public class Compra {
-    private static int nro_instancia = 0;
-    private Integer nro_compra;
-    private Integer id_compra;
-    private Integer id_usuario;
+    
+    private Integer nro_compra, id_compra, id_usuario, numero_tarjeta;
     private Double monto_total;
     private Date fecha;
-    private String forma_pago;
+    private String forma_pago, direccion_envio;
     private ListaProductos productos;
     
     public Compra(Integer id_usuario, Date fecha, String forma_pago){
@@ -30,8 +28,7 @@ public class Compra {
         this.monto_total = 0.0;
         this.fecha = fecha;
         this.forma_pago = forma_pago;
-        this.nro_compra = nro_instancia + 1;
-        Compra.nro_instancia += 1;
+        
     }
     
     public Compra(Integer id_compra, Integer id_usuario, Date fecha, String forma_pago){
@@ -97,6 +94,24 @@ public class Compra {
     public void setProductos(ListaProductos productos) {
         this.productos = productos;
     }
+
+    public String getDireccion_envio() {
+        return this.direccion_envio;
+    }
+
+    public void setDireccion_envio(String direccion_envio){
+        this.direccion_envio = direccion_envio;
+    }
+
+    public Integer getNumero_tarjeta() {
+        return numero_tarjeta;
+    }
+
+    public void setNumero_tarjeta(Integer numero_tarjeta) {
+        this.numero_tarjeta = numero_tarjeta;
+    }
+    
+    
     
     /**
      *Esta funcion trae todos los productos de una compra
@@ -133,6 +148,8 @@ public class Compra {
             //cargamos una por una las compras realizadas por el usuario
             Compra compra = new Compra(man.getResult().getInt("id_compra"),man.getResult().getInt("id_usuario"), man.getResult().getDate("fecha"),man.getResult().getString("forma_pago"));
             compra.setMonto_total(man.getResult().getDouble("monto_total"));
+            compra.setDireccion_envio(man.getResult().getString("direccion_envio"));
+            compra.setNumero_tarjeta(man.getResult().getInt("nro_tarjeta"));
             //System.out.println("Compra: "+compra);
             compra.setProductos(Compra.getComprasDetalle(compra.getId_compra()));//cargamos los productos de la compra, haciendo uso de una funcion definida en la propia clase
             compras.add(compra);

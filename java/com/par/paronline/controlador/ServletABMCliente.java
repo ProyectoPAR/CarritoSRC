@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.par.paronline.modelo.Usuario;
 import com.par.paronline.modelo.ABMCliente;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -34,16 +35,17 @@ public class ServletABMCliente extends HttpServlet {
         u.setDireccion(request.getParameter("direccion"));
         u.setEmail(request.getParameter("email"));
         u.setContrasenha(request.getParameter("contrasenha"));
-        
+        u.setNombre_usuario(request.getParameter("nombre_usuario"));
         ABMCliente.actualizar(u);
-        response.sendRedirect("ABMCliente.jsp");
+        request.getSession(true).setAttribute("user", u);
+        
     }
    
     public void eliminar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception{
         //todos los id deben ser casteados a Integer o int
-        ABMCliente.borrarUsuario(Integer.parseInt(request.getParameter("id")));
-        response.sendRedirect("ABMCliente.jsp");
+        ABMCliente.borrarUsuario(Integer.parseInt(request.getParameter("id_usuario")));
+        
     }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,26 +53,37 @@ public class ServletABMCliente extends HttpServlet {
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
-        
         response.setContentType("text/html;charset=UTF-8");
-        
-        String accion = request.getParameter("accion");
-        request.setAttribute("accion",accion);
-        
-        if("eliminar".equals(accion)){
-            eliminar(request,response);
+        RequestDispatcher rd = null;
+        try{
+            String accion = request.getParameter("accion");
+            request.setAttribute("accion",accion);
+            rd = request.getRequestDispatcher("ABMCliente.jsp");
+            if("eliminar".equals(accion)){
+                eliminar(request,response);
+            }
+
+            if("editar".equals(accion)){
+
+                rd = request.getRequestDispatcher("EditCliente.jsp");
+                
+            }
+
+            if("grabarCambios".equals(accion)){
+                if(request.getParameter("lastpage").equals("perfil")) rd = request.getRequestDispatcher("Perfil.jsp");
+                actualizar(request,response);
+            }
         }
-        
-        if("editar".equals(accion)){
-            
-            RequestDispatcher rd = request.getRequestDispatcher("EditCliente.jsp");
-            if (rd != null) {
-                rd.forward(request, response);
-            }  
+        catch(SQLException sqle){
+            request.setAttribute("mensaje_error", sqle.getMessage());
+            rd = request.getRequestDispatcher("PagError.jsp");
         }
-        
-        if("grabarCambios".equals(accion)){
-            actualizar(request,response);
+        catch(Exception e){
+            request.setAttribute("mensaje_error", e.getMessage());
+            rd = request.getRequestDispatcher("PagError.jsp");
+        }
+        finally{
+            rd.forward(request, response);
         }
        
 

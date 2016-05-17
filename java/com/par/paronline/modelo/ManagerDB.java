@@ -89,13 +89,15 @@ public class ManagerDB {
     //esta funcion se encarga de insertar la cabecera de una compra desde el mismo manager, por lo que usa objetos de la misma instancia
     public int insertar_compra(Compra compra) throws SQLException, ClassNotFoundException{
         int id_compra;
-        String query= "insert into Compras (id_usuario, monto_total,fecha, forma_pago, nro_factura) values (?, ?, ?, ?, ?)";
+        
+        String query= "insert into Compras (id_usuario, monto_total,fecha, forma_pago, direccion_envio, nro_tarjeta) values (?, ?, ?, ?, ?, ?)";
         this.statement = this.getPrepareStatement(query, this.statement.RETURN_GENERATED_KEYS);
         this.statement.setInt(1, compra.getId_usuario());
         this.statement.setDouble(2, compra.getMonto_total());
         this.statement.setDate(3, new java.sql.Date(compra.getFecha().getYear(), compra.getFecha().getMonth(), compra.getFecha().getDay()));
         this.statement.setString(4, compra.getForma_pago());
-        this.statement.setInt(5, compra.getNro_compra());
+        this.statement.setString(5, compra.getDireccion_envio());
+        this.statement.setInt(6, compra.getNumero_tarjeta());
         this.statement.executeUpdate();
         this.statement.getGeneratedKeys().next();
         id_compra = Integer.parseInt(this.statement.getGeneratedKeys().getString("id_compra"));
@@ -109,12 +111,6 @@ public class ManagerDB {
         this.statement.setInt(2, id_producto);
         this.statement.setInt(3, cantidad);
         this.iduquery(this.statement);
-    }
-    
-    public int getId_compra(ArrayList args) throws SQLException, ClassNotFoundException{
-        String query = "select id_compra from Compras where nro_factura = "+Integer.toString((int)args.get(0));
-        this.consultar(query);
-        return this.getResult().getInt("id_compra");
     }
     
     public void cerrarConexion() throws SQLException, ClassNotFoundException{

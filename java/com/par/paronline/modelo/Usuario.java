@@ -64,7 +64,7 @@ public class Usuario implements Serializable{
     }
 
     public String getDireccion() {
-        return direccion;
+        return this.direccion;
     }
 
     public void setDireccion(String direccion) {

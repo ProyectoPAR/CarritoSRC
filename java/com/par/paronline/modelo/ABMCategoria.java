@@ -27,11 +27,13 @@ public class ABMCategoria {
         man.cerrarConexion();
     }
     
-    public void baja(int id_producto) throws SQLException, ClassNotFoundException, Exception{
+    public void baja(Integer id_categoria) throws SQLException, ClassNotFoundException, Exception{
         man = new ManagerDB();
+        man.consultar("select * from Productos where id_categoria = "+id_categoria);
+        if (man.getResult().next()) throw new Exception("No se puede eliminar la categoria porque hay productos que dependen de el");
         query = "delete from Categorias where id_categoria = ?";
         statement = man.getPrepareStatement(query);
-        statement.setInt(1, id_producto);
+        statement.setInt(1, id_categoria);
         man.iduquery(statement);
         man.cerrarConexion();
     }

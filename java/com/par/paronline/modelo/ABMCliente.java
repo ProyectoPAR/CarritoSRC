@@ -66,10 +66,11 @@ public class ABMCliente {
         return u;
     }
     
-    public static void agregar(Usuario u) throws NamingException, Exception{
+    public static Integer agregar(Usuario u) throws NamingException, Exception{
         ManagerDB db = new ManagerDB();
-        String sql = "insert into usuarios(nombre,apellido,contrasenha,direccion,email,rol,nombre_usuario) values (?,?,?,?,?,?,?)";
-        PreparedStatement stmt = db.getPrepareStatement(sql);
+        PreparedStatement stmt = null;
+        String sql = "insert into Usuarios(nombre,apellido,contrasenha,direccion,email,rol,nombre_usuario) values (?,?,?,?,?,?,?)";
+        stmt = db.getPrepareStatement(sql, stmt.RETURN_GENERATED_KEYS);
         stmt.setString(1,u.getNombre());
         stmt.setString(2,u.getApellido());
         stmt.setString(3,u.getContrasenha());
@@ -78,21 +79,26 @@ public class ABMCliente {
         stmt.setString(6,u.getRol());
         stmt.setString(7,u.getNombre_usuario());
         db.iduquery(stmt);
+        stmt.getGeneratedKeys().next();
+        Integer id_usuario = stmt.getGeneratedKeys().getInt("id_usuario");
         db.closeStatement(stmt);
         db.cerrarConexion();
+        return id_usuario;
     }
     
     public static void actualizar (Usuario u) throws SQLException, Exception{
         ManagerDB db = new ManagerDB();
         String sql = "update usuarios set "
-                + "nombre = ?, apellido = ?, contrasenha = ? , direccion = ? "
+                + "nombre = ?, apellido = ?, contrasenha = ? , direccion = ?, email = ?, nombre_usuario = ? "
                 + "where id_usuario = ?";
         PreparedStatement stmt = db.getPrepareStatement(sql);
         stmt.setString(1,u.getNombre());
         stmt.setString(2,u.getApellido());
         stmt.setString(3,u.getContrasenha());
         stmt.setString(4,u.getDireccion());
-        stmt.setInt(5,u.getId_usuario());
+        stmt.setString(5, u.getEmail());
+        stmt.setString(6, u.getNombre_usuario());
+        stmt.setInt(7,u.getId_usuario());
         db.iduquery(stmt);
         db.closeStatement(stmt);
         db.cerrarConexion();
@@ -117,6 +123,8 @@ public class ABMCliente {
         //ESTE METODO AHORA BUSCA MEDIANTE EL ID NUMERICO, ANTES LO HACIA POR EL
         //EMAIL
         ManagerDB db = new ManagerDB();
+        db.consultar("select * from Compras where id_usuario = "+id);
+        if(db.getResult().next()) throw new SQLException("No se puede eliminar usuario porque hay compras que dependen de el");
         String sql = "delete from usuarios where id_usuario =?";
         PreparedStatement stmt = db.getPrepareStatement(sql);
         stmt.setInt(1,id);

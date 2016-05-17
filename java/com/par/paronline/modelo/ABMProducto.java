@@ -35,6 +35,8 @@ public class ABMProducto {
     
     public void baja(int id_producto) throws SQLException, ClassNotFoundException, Exception{
         man = new ManagerDB();
+        man.consultar("select * from Compras_detalle where id_producto = "+id_producto);
+        if(man.getResult().next()) throw new Exception("No se puede eliminar el producto porque hay compras que dependen de el");
         query = "delete from Productos where id_producto = ?";
         statement = man.getPrepareStatement(query);
         statement.setInt(1, id_producto);

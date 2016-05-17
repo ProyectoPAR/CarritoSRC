@@ -49,10 +49,11 @@ public class ServletPro extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
         response.setContentType("text/html;charset=UTF-8");
-        ListaProductos productos = new ListaProductos();
+        ListaProductos productos = null;
         HttpSession session = request.getSession(true);
         RequestDispatcher dispatcher = null;
         try{
+            productos = new ListaProductos();
             String descripcion = "";
             if(request.getParameter("categoria") == null && request.getParameter("descripcion") == null){
                 categoria = "all";
