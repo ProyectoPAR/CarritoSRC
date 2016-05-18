@@ -26,8 +26,12 @@ public class ListaProductos{
     }
     
     public void removeProducto(Integer id_producto){
-        Producto p = buscarId(id_producto);
-        this.productos.remove(this.buscarId(id_producto));
+        for(int i = 0 ; i < this.size() ; i ++ ){
+            if(this.get(i).getId_producto() == id_producto) {
+                this.productos.remove(i);
+                break;
+            }
+        }
     }
     
     public void removeProducto(Producto p){
@@ -71,7 +75,6 @@ public class ListaProductos{
             man.consultar(query);
         }
         else{
-            
             if(!categoria.equals("all")){
                 query = query + " and c.descripcion = ?";
                 args.add(categoria);
@@ -81,7 +84,6 @@ public class ListaProductos{
                 args.add('%'+descripcion+'%');
             }
             man.consultar(query, args);
-              
         }
             
         while(man.getResult().next()){

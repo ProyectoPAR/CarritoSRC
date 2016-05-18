@@ -26,6 +26,8 @@ public class ServletAdd extends HttpServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
+     * 
+     * El ServletAdd se encarga de agregar o quitar un producto del carrito.
      *
      * @param request servlet request
      * @param response servlet response
@@ -35,28 +37,28 @@ public class ServletAdd extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        RequestDispatcher dispatcher = null;
+        RequestDispatcher dispatcher = null;//creamos el dispatcher previamente null
         try{
             //el requesta dispatcher debe redirigir a la pagina de donde vino
-            String lastpage = request.getParameter("lastpage");
+            String lastpage = request.getParameter("lastpage");//el parametro lastpage es usado para saber si vino desde Busqueda.jsp y Producto.jsp
             if(lastpage.equals("busqueda")) dispatcher = request.getRequestDispatcher("Busqueda.jsp");
             else dispatcher = request.getRequestDispatcher("Producto.jsp");
             HttpSession session = request.getSession(true);//se recupera la session
-            ListaProductos productos = (ListaProductos)session.getAttribute("lista_productos");
+            ListaProductos productos = (ListaProductos)session.getAttribute("lista_productos");//se recupera la lista de productos cargados
             Integer id_producto = Integer.parseInt(request.getParameter("id_producto"));//se obtiene el parametro id_producto
-            Integer cantidad = Integer.parseInt(request.getParameter("cantidad"));
+            Integer cantidad = Integer.parseInt(request.getParameter("cantidad"));//se recupera la cantidad seteada por el cliente
             ListaProductos carrito = (ListaProductos)session.getAttribute("carrito");//obtenemos el carrito de la session
-            String addpop = (String) request.getParameter("agregar-sacar");
+            String addpop = (String) request.getParameter("agregar-sacar");//la acccion, que decide si el producto se quita o se agrega al carrito
             Producto p = productos.buscarId(id_producto);
-            if(addpop.equals("Agregar")){
-                if(!carrito.existeProducto(p)){
+            if(addpop.equals("Agregar")){//si la accion es agregar
+                if(!carrito.existeProducto(p)){//si no existe el producto en el carrito lo agregara
                     p.setCantidad_compra(cantidad);//agregamos la cantidad
                     carrito.addProducto(p);//agregamos al carrito el producto, que por ahora es solo un string
                 }
             }
-            else{
+            else{//si la accion no es agreagar, deberia ser quitar
                 p.setCantidad_compra(0);//seteamos de nuevo la cantidad de compra a 0
-                carrito.removeProducto(p);//sacamos el producto
+                carrito.removeProducto(p.getId_producto());//sacamos el producto
             }
             if(dispatcher != null) dispatcher.forward(request, response);
         }

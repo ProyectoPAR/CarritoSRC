@@ -25,7 +25,7 @@ import javax.servlet.RequestDispatcher;
 @WebServlet(name = "ServletABMCliente", urlPatterns = {"/ServletABMCliente"})
 public class ServletABMCliente extends HttpServlet {
 
-    public void actualizar(HttpServletRequest request, HttpServletResponse response)
+    public Usuario actualizar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception{
         
         Usuario u = new Usuario();
@@ -37,8 +37,7 @@ public class ServletABMCliente extends HttpServlet {
         u.setContrasenha(request.getParameter("contrasenha"));
         u.setNombre_usuario(request.getParameter("nombre_usuario"));
         ABMCliente.actualizar(u);
-        request.getSession(true).setAttribute("user", u);
-        
+        return u;
     }
    
     public void eliminar(HttpServletRequest request, HttpServletResponse response)
@@ -64,14 +63,19 @@ public class ServletABMCliente extends HttpServlet {
             }
 
             if("editar".equals(accion)){
-
                 rd = request.getRequestDispatcher("EditCliente.jsp");
-                
             }
 
             if("grabarCambios".equals(accion)){
-                if(request.getParameter("lastpage").equals("perfil")) rd = request.getRequestDispatcher("Perfil.jsp");
-                actualizar(request,response);
+                Usuario user = actualizar(request,response);
+                if(request.getParameter("lastpage").equals("perfil")){
+                    rd = request.getRequestDispatcher("Perfil.jsp");
+                    request.getSession(true).setAttribute("user",user);
+                }
+                else{
+                    rd = request.getRequestDispatcher("ABMCliente.jsp");
+                }
+                
             }
         }
         catch(SQLException sqle){
@@ -85,8 +89,6 @@ public class ServletABMCliente extends HttpServlet {
         finally{
             rd.forward(request, response);
         }
-       
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

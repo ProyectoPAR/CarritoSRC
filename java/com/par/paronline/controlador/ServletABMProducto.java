@@ -39,31 +39,30 @@ public class ServletABMProducto extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, ClassNotFoundException, Exception {
         response.setContentType("text/html;charset=UTF-8");
-        RequestDispatcher dispatcher = null;
+        RequestDispatcher dispatcher = null;//creamos el dispatcher previamente null
         try{
-            String accion = request.getParameter("accion");
-            String lastpage = request.getParameter("lastpage");
+            String accion = request.getParameter("accion");//la accion que realizo el usuario
+            String lastpage = request.getParameter("lastpage");//la ultima pagina que puede ser ABMProducto o ModificarProducto
             if(accion != null){
             //falta castear el precio a double
                 dispatcher =  request.getRequestDispatcher("ABMProducto.jsp");
-                HttpSession session = request.getSession(true);
-                ListaProductos productos = (ListaProductos)session.getAttribute("lista_productos");
-                ABMProducto abm = new ABMProducto();
-                ArrayList args = new ArrayList();
-                ListaCategorias categorias = new ListaCategorias();
-                categorias.getListaCategorias();
-                
-                if(accion.equals("add")){
-                    
-                    String descripcion = request.getParameter("descripcion");
-                    double precio = Double.parseDouble(request.getParameter("precio"));
-                    String categoria = request.getParameter("categoria");
+                HttpSession session = request.getSession(true);//recuperamos la session
+                ListaProductos productos = (ListaProductos)session.getAttribute("lista_productos");//recuperamos los productos
+                ABMProducto abm = new ABMProducto();//instanciamos un objeto abm producto
+                ArrayList args = new ArrayList();//el arraylist para los argumentos de la operacion
+                ListaCategorias categorias = new ListaCategorias();//la lista de categorias
+                categorias.getListaCategorias();  
+                if(accion.equals("add")){//si la operacion es agregar
+                    String descripcion = request.getParameter("descripcion");//recuperamos la descripcion
+                    double precio = Double.parseDouble(request.getParameter("precio"));//el precio
+                    String categoria = request.getParameter("categoria");//la categoria que es el nombre, para insertar debemos usar el id_categoria
                     String imagen = "/ruta/imagen";
                     args.add(descripcion);
                     args.add(imagen);
                     args.add(precio);
-                    args.add(categorias.buscarDescripcion(categoria).getId_categoria());
-                    
+                    Integer id_categoria = categorias.buscarDescripcion(categoria).getId_categoria();//se busca el id_categoria
+                    System.out.println("Id de categoria: "+id_categoria);
+                    args.add(id_categoria);
                     abm.alta(args);
                 }
                 if(accion.equals("update")){
@@ -87,7 +86,9 @@ public class ServletABMProducto extends HttpServlet {
                     abm.modificar(args);
                     dispatcher = request.getRequestDispatcher("ABMProducto.jsp");
                 }
-                
+            }
+            else{
+                throw new ServletException("No se encuentra la pagina solicitada");
             }
         }
         catch(Exception e){
@@ -111,14 +112,27 @@ public class ServletABMProducto extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        RequestDispatcher dispatcher = null;
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
+            request.setAttribute("mensaje_error", ex.getMessage());
             Logger.getLogger(ServletABMProducto.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
+            request.setAttribute("mensaje_error", ex.getMessage());
             Logger.getLogger(ServletABMProducto.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
+        }
+        catch(NullPointerException npe){
+            request.setAttribute("mensaje_error", npe.getMessage());
+            Logger.getLogger(ServletABMProducto.class.getName()).log(Level.SEVERE, null, npe);
+        }
+        catch (Exception ex) {
+            request.setAttribute("mensaje_error", ex.getMessage());
             Logger.getLogger(ServletABMProducto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            dispatcher = request.getRequestDispatcher("PagError.jsp");
+            dispatcher.forward(request, response);
         }
     }
 
@@ -133,17 +147,26 @@ public class ServletABMProducto extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        RequestDispatcher dispatcher = null;
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
+            request.setAttribute("mensaje_error", ex.getMessage());
             Logger.getLogger(ServletABMProducto.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
+            request.setAttribute("mensaje_error", ex.getMessage());
             Logger.getLogger(ServletABMProducto.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
+        }catch(NullPointerException npe){
+            request.setAttribute("mensaje_error", npe.getMessage());
+            Logger.getLogger(ServletABMProducto.class.getName()).log(Level.SEVERE, null, npe);
+        }catch (Exception ex) {
+            request.setAttribute("mensaje_error", ex.getMessage());
             Logger.getLogger(ServletABMProducto.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        finally{
+            dispatcher = request.getRequestDispatcher("PagError.jsp");
+            dispatcher.forward(request, response);
+        }
     }
 
     /**

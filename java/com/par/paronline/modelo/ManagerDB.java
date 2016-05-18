@@ -41,16 +41,15 @@ public class ManagerDB {
         this.conexion = Conexion.getConexion();
     }
     
-    
-    
+
     public void consultar(String query) throws SQLException, ClassNotFoundException{
         this.statement = this.getPrepareStatement(query);
         this.result = this.statement.executeQuery();
+        //this.closeStatement(this.statement);
         
     }
     
-    public void consultar(String query, ArrayList args) throws SQLException, ClassNotFoundException{
-        
+    public void consultar(String query, ArrayList args) throws SQLException, ClassNotFoundException{        
         this.statement = this.getPrepareStatement(query);
         for(int i = 0 ; i < args.size() ; i ++){
             if(args.get(i).getClass().getName().equals("java.lang.String"))
@@ -62,7 +61,7 @@ public class ManagerDB {
         }
         System.out.println(query);
         this.result = this.statement.executeQuery();
-        
+        //this.closeStatement(this.statement);
     }
     
     public ResultSet getResult(){
@@ -89,7 +88,6 @@ public class ManagerDB {
     //esta funcion se encarga de insertar la cabecera de una compra desde el mismo manager, por lo que usa objetos de la misma instancia
     public int insertar_compra(Compra compra) throws SQLException, ClassNotFoundException{
         int id_compra;
-        
         String query= "insert into Compras (id_usuario, monto_total,fecha, forma_pago, direccion_envio, nro_tarjeta) values (?, ?, ?, ?, ?, ?)";
         this.statement = this.getPrepareStatement(query, this.statement.RETURN_GENERATED_KEYS);
         this.statement.setInt(1, compra.getId_usuario());

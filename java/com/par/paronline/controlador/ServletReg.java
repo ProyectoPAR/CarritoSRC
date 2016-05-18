@@ -24,8 +24,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "ServletReg", urlPatterns = {"/Reg"})
 public class ServletReg extends HttpServlet {
-   
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
@@ -35,8 +33,7 @@ public class ServletReg extends HttpServlet {
             if(!ABMCliente.verificarEmail(request.getParameter("email")) &&//deberia se existeEmail.
             !ABMCliente.verificarNombreUsuario(request.getParameter("nombre_usuario"))){//deberia ser existeNombreUsuario.
                 //si es que no existe el mail y el user procedera al registro
-                //pendiente la pagina de error que mostrara si no pasa la validacion
-                
+                //pendiente la pagina de error que mostrara si no pasa la validacion             
                 Usuario u = new Usuario();
                 u.setNombre(request.getParameter("nombre"));
                 u.setApellido(request.getParameter("apellido"));

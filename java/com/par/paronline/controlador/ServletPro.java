@@ -49,25 +49,26 @@ public class ServletPro extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
         response.setContentType("text/html;charset=UTF-8");
-        ListaProductos productos = null;
-        HttpSession session = request.getSession(true);
-        RequestDispatcher dispatcher = null;
+        ListaProductos productos = null;//lista de productos null previamente
+        HttpSession session = request.getSession(true);//se recupera la session
+        RequestDispatcher dispatcher = null;//el dispatcher null
         try{
-            productos = new ListaProductos();
+            productos = new ListaProductos();//se inicializa la lista de productos
             String descripcion = "";
+            //verificamos, primero si la categoria es null, si es asi seleccionaremos todas la categorias, si la descripcion es null no se hace nada
             if(request.getParameter("categoria") == null && request.getParameter("descripcion") == null){
                 categoria = "all";
                 dispatcher = request.getRequestDispatcher("Producto.jsp");
             }
-            else{
+            else{//si ninguno de los es null entonces se recuperan del request
                 categoria = request.getParameter("categoria");
                 descripcion = '%'+request.getParameter("descripcion")+'%';
-                dispatcher = request.getRequestDispatcher("Busqueda.jsp");
+                dispatcher = request.getRequestDispatcher("Busqueda.jsp");//tambien despacharemos a la pagina de busqueda, dado que se ha elegido una categoria y una descripcion
             }
-            productos.getListaProductos(categoria, descripcion);
-            session.setAttribute("lista_productos", productos);
+            productos.getListaProductos(categoria, descripcion);//obtenemos la lista de productos con esa categoria y esa descripcion
+            session.setAttribute("lista_productos", productos);//esa lista de productos se anhade a la session
             if(dispatcher != null){
-                dispatcher.forward(request, response);
+                dispatcher.forward(request, response);//despachamos
             }
             
         }

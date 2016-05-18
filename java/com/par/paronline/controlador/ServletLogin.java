@@ -26,25 +26,25 @@ import javax.servlet.http.HttpSession;
 public class ServletLogin extends HttpServlet {
 
     public Usuario comprobarLogin(String user_email,String pass) throws SQLException, ClassNotFoundException, Exception{
-    Usuario u = new Usuario();
-    ArrayList<String> args = new ArrayList();
-    args.add(user_email);
-    args.add(pass);
-    String sql = "select * from Usuarios where nombre_usuario = ? and contrasenha = ?;";
-    ManagerDB man = new ManagerDB();
-    man.consultar(sql, args);
-    if(man.getResult().next()){
-        u.setId_usuario(man.getResult().getInt("id_usuario"));
-        u.setNombre(man.getResult().getString("nombre"));
-        u.setApellido(man.getResult().getString("apellido"));
-        u.setNombre_usuario(man.getResult().getString("nombre_usuario"));
-        u.setEmail(man.getResult().getString("email"));
-        u.setDireccion(man.getResult().getString("direccion"));
-        u.setContrasenha(man.getResult().getString("contrasenha")); 
-        u.setRol(man.getResult().getString("rol"));
-    }
-
-    return u;
+        Usuario u = new Usuario();
+        ArrayList<String> args = new ArrayList();
+        args.add(user_email);
+        args.add(pass);
+        String sql = "select * from Usuarios where nombre_usuario = ? and contrasenha = ?;";
+        ManagerDB man = new ManagerDB();
+        man.consultar(sql, args);
+        if(man.getResult().next()){
+            u.setId_usuario(man.getResult().getInt("id_usuario"));
+            u.setNombre(man.getResult().getString("nombre"));
+            u.setApellido(man.getResult().getString("apellido"));
+            u.setNombre_usuario(man.getResult().getString("nombre_usuario"));
+            u.setEmail(man.getResult().getString("email"));
+            u.setDireccion(man.getResult().getString("direccion"));
+            u.setContrasenha(man.getResult().getString("contrasenha")); 
+            u.setRol(man.getResult().getString("rol"));
+        }
+        man.cerrarConexion();
+        return u;
     }
     
     public void cerrarSession(HttpSession sesion){ //METODO QUE CIERRA LA SESION ACTUAL 

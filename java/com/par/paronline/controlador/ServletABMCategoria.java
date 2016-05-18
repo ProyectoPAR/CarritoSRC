@@ -35,25 +35,21 @@ public class ServletABMCategoria extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException, ServletException {
         response.setContentType("text/html;charset=UTF-8");
-        RequestDispatcher dispatcher =  null;
+        RequestDispatcher dispatcher =  null;//creamos un dispatcher
         try {
-            String accion = request.getParameter("accion");
-            String lastpage = request.getParameter("lastpage");
+            String accion = request.getParameter("accion");//recuperamos la accion realizada por el usuario
+            String lastpage = request.getParameter("lastpage");//tambien la ultima pagina accedida, puede ser ABMCategoria.jsp o ModificarCategoria.jsp
             if(accion != null){
-            //falta castear el precio a double
                 dispatcher =  request.getRequestDispatcher("ABMCategoria.jsp");
                 HttpSession session = request.getSession(true);
                 ListaCategorias categorias = (ListaCategorias)session.getAttribute("lista_categorias");
                 ABMCategoria abm = new ABMCategoria();
                 ArrayList args = new ArrayList();
-                
                 if(accion.equals("add")){
-                    
                     String descripcion = request.getParameter("descripcion");
                     args.add(descripcion);
-                    
                     abm.alta(args);
                 }
                 if(accion.equals("update")){
@@ -72,6 +68,9 @@ public class ServletABMCategoria extends HttpServlet {
                     dispatcher = request.getRequestDispatcher("ABMCategoria.jsp");
                 }
                 
+            }
+            else{
+                throw new ServletException("No se encuentra la pagina solicitada");
             }
         }
         catch(Exception e){
@@ -96,7 +95,14 @@ public class ServletABMCategoria extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try{
+            processRequest(request, response);
+        }
+        catch(ServletException se){
+            request.setAttribute("mensaje_error", se.getMessage());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("PagError.jsp");
+            dispatcher.forward(request, response);
+        }
     }
 
     /**
@@ -110,7 +116,14 @@ public class ServletABMCategoria extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try{
+            processRequest(request, response);
+        }
+        catch(ServletException se){
+            request.setAttribute("mensaje_error", se.getMessage());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("PagError.jsp");
+            dispatcher.forward(request, response);
+        }
     }
 
     /**

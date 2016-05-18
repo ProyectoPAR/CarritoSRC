@@ -26,8 +26,12 @@ public class ListaCategorias {
     }
     
     public void removeCategoria(Integer id_categoria){
-        Categoria p = buscarId(id_categoria);
-        this.categorias.remove(this.buscarId(id_categoria));
+        for(int i = 0 ; i < this.size() ; i ++){
+            if(this.get(i).getId_categoria() == id_categoria){
+                this.categorias.remove(i);
+                break;
+            }
+        }
     }
     
     public void removeCategoria(Categoria c){
@@ -45,7 +49,7 @@ public class ListaCategorias {
         for (int i = 0 ; i < this.categorias.size() ; i ++)
             if (this.categorias.get(i).getDescripcion().equals(descripcion))
                 return this.categorias.get(i);
-        return null;//retorna null si no hay ningun producto con ese id
+        throw new NullPointerException("No existe categoria para el producto");
     }
     
     public Boolean existeCategoria(Categoria p){

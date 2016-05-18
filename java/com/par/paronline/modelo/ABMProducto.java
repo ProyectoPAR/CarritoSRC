@@ -30,6 +30,7 @@ public class ABMProducto {
         statement.setDouble(3, (double) args.get(2));
         statement.setInt(4, (int) args.get(3));
         man.iduquery(statement);
+        man.closeStatement(statement);
         man.cerrarConexion();
     }
     
@@ -41,6 +42,7 @@ public class ABMProducto {
         statement = man.getPrepareStatement(query);
         statement.setInt(1, id_producto);
         man.iduquery(statement);
+        man.closeStatement(statement);
         man.cerrarConexion();
     }
     
@@ -56,6 +58,7 @@ public class ABMProducto {
         statement.setInt(5, (int)args.get(4));
         System.out.println(statement.toString());
         man.iduquery(statement);
+        man.closeStatement(statement);
         man.cerrarConexion();
     }
 }

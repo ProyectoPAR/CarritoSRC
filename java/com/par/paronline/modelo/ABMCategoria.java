@@ -24,6 +24,7 @@ public class ABMCategoria {
         statement = man.getPrepareStatement(query);
         statement.setString(1, (String) args.get(0));
         man.iduquery(statement);
+        man.closeStatement(statement);
         man.cerrarConexion();
     }
     
@@ -35,6 +36,7 @@ public class ABMCategoria {
         statement = man.getPrepareStatement(query);
         statement.setInt(1, id_categoria);
         man.iduquery(statement);
+        man.closeStatement(statement);
         man.cerrarConexion();
     }
     
@@ -45,6 +47,7 @@ public class ABMCategoria {
         statement.setString(1, (String)args.get(0));
         statement.setString(2, (String)args.get(1));
         man.iduquery(statement);
+        man.closeStatement(statement);
         man.cerrarConexion();
     }
 }

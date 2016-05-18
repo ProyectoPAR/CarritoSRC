@@ -115,6 +115,7 @@ public class ABMCliente {
             existe = true;
             return existe;
         }
+        db.closeStatement(stmt);
         db.cerrarConexion();
         return existe;
     }
@@ -125,6 +126,9 @@ public class ABMCliente {
         ManagerDB db = new ManagerDB();
         db.consultar("select * from Compras where id_usuario = "+id);
         if(db.getResult().next()) throw new SQLException("No se puede eliminar usuario porque hay compras que dependen de el");
+        db.consultar("select rol from Usuarios where id_usuario = "+id);
+        db.getResult().next();
+        if(db.getResult().getString("rol").equals("A")) throw new SQLException("No se puede eliminar usuario porque posee rol de administrador");
         String sql = "delete from usuarios where id_usuario =?";
         PreparedStatement stmt = db.getPrepareStatement(sql);
         stmt.setInt(1,id);
@@ -162,10 +166,8 @@ public class ABMCliente {
         Usuario u = null;
         ArrayList<String> args = new ArrayList();
         args.add(email);
-        args.add(contrasenha);
-           
+        args.add(contrasenha);   
         db.consultar("select * from usuarios where email = ? and contrasenha = ?", args);
-
         if(db.getResult().next()){
             u = new Usuario();
             u.setId_usuario(db.getResult().getInt("id_usuario"));
@@ -173,10 +175,8 @@ public class ABMCliente {
             u.setApellido(db.getResult().getString("apellido"));
             u.setEmail(db.getResult().getString("email"));
             u.setRol(db.getResult().getString("rol"));
-            return u;
         }
+        db.cerrarConexion();
         return u;
-    }
-        
-           
+    } 
 }
