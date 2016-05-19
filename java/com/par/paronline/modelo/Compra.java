@@ -13,17 +13,18 @@ package com.par.paronline.modelo;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Calendar;
 import javax.naming.NamingException;
 
 public class Compra {
     
     private Integer nro_compra, id_compra, id_usuario, numero_tarjeta;
     private Double monto_total;
-    private Date fecha;
+    private Calendar fecha;
     private String forma_pago, direccion_envio;
     private ListaProductos productos;
     
-    public Compra(Integer id_usuario, Date fecha, String forma_pago){
+    public Compra(Integer id_usuario, Calendar fecha, String forma_pago){
         this.id_usuario = id_usuario;
         this.monto_total = 0.0;
         this.fecha = fecha;
@@ -31,7 +32,7 @@ public class Compra {
         
     }
     
-    public Compra(Integer id_compra, Integer id_usuario, Date fecha, String forma_pago){
+    public Compra(Integer id_compra, Integer id_usuario, Calendar fecha, String forma_pago){
         this.id_compra = id_compra;
         this.id_usuario = id_usuario;
         this.monto_total = 0.0;
@@ -63,11 +64,15 @@ public class Compra {
         this.monto_total = monto_total;
     }
 
-    public Date getFecha(){
+    public Calendar getFecha(){
         return this.fecha;
     }
+    
+    public String getFechaString(){
+        return Integer.toString(this.fecha.get(Calendar.DAY_OF_MONTH))+"/"+Integer.toString(this.fecha.get(Calendar.MONTH)+1)+"/"+Integer.toString(this.fecha.get(Calendar.YEAR));
+    }
 
-    public void setFecha(Date fecha){
+    public void setFecha(Calendar fecha){
         this.fecha = fecha;
     }
 
@@ -146,7 +151,9 @@ public class Compra {
         man.consultar(query1, args);
         while(man.getResult().next()){
             //cargamos una por una las compras realizadas por el usuario
-            Compra compra = new Compra(man.getResult().getInt("id_compra"),man.getResult().getInt("id_usuario"), man.getResult().getDate("fecha"),man.getResult().getString("forma_pago"));
+            Calendar fecha = Calendar.getInstance();
+            fecha.setTime(man.getResult().getDate("fecha"));
+            Compra compra = new Compra(man.getResult().getInt("id_compra"),man.getResult().getInt("id_usuario"), fecha,man.getResult().getString("forma_pago"));
             compra.setMonto_total(man.getResult().getDouble("monto_total"));
             compra.setDireccion_envio(man.getResult().getString("direccion_envio"));
             compra.setNumero_tarjeta(man.getResult().getInt("nro_tarjeta"));

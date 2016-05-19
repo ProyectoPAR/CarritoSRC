@@ -25,6 +25,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Date;
 import javax.naming.NamingException;
 
@@ -87,12 +88,15 @@ public class ManagerDB {
     }
     //esta funcion se encarga de insertar la cabecera de una compra desde el mismo manager, por lo que usa objetos de la misma instancia
     public int insertar_compra(Compra compra) throws SQLException, ClassNotFoundException{
-        int id_compra;
+        Integer id_compra;
+        Integer anho = compra.getFecha().get(Calendar.YEAR);
+        Integer mes = compra.getFecha().get(Calendar.MONTH);
+        Integer dia = compra.getFecha().get(Calendar.DAY_OF_MONTH);
         String query= "insert into Compras (id_usuario, monto_total,fecha, forma_pago, direccion_envio, nro_tarjeta) values (?, ?, ?, ?, ?, ?)";
         this.statement = this.getPrepareStatement(query, this.statement.RETURN_GENERATED_KEYS);
         this.statement.setInt(1, compra.getId_usuario());
         this.statement.setDouble(2, compra.getMonto_total());
-        this.statement.setDate(3, new java.sql.Date(compra.getFecha().getYear(), compra.getFecha().getMonth(), compra.getFecha().getDay()));
+        this.statement.setDate(3, new java.sql.Date(anho, mes, dia));
         this.statement.setString(4, compra.getForma_pago());
         this.statement.setString(5, compra.getDireccion_envio());
         this.statement.setInt(6, compra.getNumero_tarjeta());

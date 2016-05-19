@@ -72,7 +72,7 @@ public class ServletLogin extends HttpServlet {
                 if (u.getNombre_usuario() != null){
                     request.getSession(true).setAttribute("user", u); //se setea la sesion con el username registrado
                     if(lastpage != null && lastpage.equals("Carrito")) dispatcher = request.getRequestDispatcher("Carrito.jsp");
-                    else dispatcher = request.getRequestDispatcher("MenuPrincipal.jsp");
+                    else dispatcher = request.getRequestDispatcher("index.jsp");
                     if(u.getRol().equals("A")) request.getSession(true).setAttribute("admin", "si");
                     //a la pagina de donde se vino
                 }else{
@@ -87,7 +87,7 @@ public class ServletLogin extends HttpServlet {
         catch (Exception ex) {
             Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
             request.setAttribute("mensaje_error",ex.getMessage());
-            dispatcher = request.getRequestDispatcher("Login.jsp");
+            dispatcher = request.getRequestDispatcher("PagError.jsp");
         }
         finally{
             dispatcher.forward(request,response);

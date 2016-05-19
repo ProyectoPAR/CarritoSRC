@@ -46,11 +46,11 @@ public class ServletAdd extends HttpServlet {
             HttpSession session = request.getSession(true);//se recupera la session
             ListaProductos productos = (ListaProductos)session.getAttribute("lista_productos");//se recupera la lista de productos cargados
             Integer id_producto = Integer.parseInt(request.getParameter("id_producto"));//se obtiene el parametro id_producto
-            Integer cantidad = Integer.parseInt(request.getParameter("cantidad"));//se recupera la cantidad seteada por el cliente
             ListaProductos carrito = (ListaProductos)session.getAttribute("carrito");//obtenemos el carrito de la session
             String addpop = (String) request.getParameter("agregar-sacar");//la acccion, que decide si el producto se quita o se agrega al carrito
             Producto p = productos.buscarId(id_producto);
             if(addpop.equals("Agregar")){//si la accion es agregar
+                Integer cantidad = Integer.parseInt(request.getParameter("cantidad"));//se recupera la cantidad seteada por el cliente si es que se quiere agregar
                 if(!carrito.existeProducto(p)){//si no existe el producto en el carrito lo agregara
                     p.setCantidad_compra(cantidad);//agregamos la cantidad
                     carrito.addProducto(p);//agregamos al carrito el producto, que por ahora es solo un string

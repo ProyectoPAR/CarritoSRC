@@ -55,31 +55,35 @@ public class ServletCompra extends HttpServlet {
             }
             else{
                 //si el usuario no esta loguado el dispatcher redirige al index para loguearse o registrerse
-                dispatcher = request.getRequestDispatcher("index.html");
-                response.getWriter().println("logueado");
+                dispatcher = request.getRequestDispatcher("ConfirmarCompra.jsp");
+                
             }
             /**************fin de la verificacion****************/
             //aqui procedemos a realizar la transaccion
-            ListaProductos carrito = (ListaProductos)session.getAttribute("carrito");
-            if (carrito.size() == 0) throw new Exception("El carrito esta vacio"); 
-            ManagerDB man = new ManagerDB();
-            String forma_pago = (String) request.getParameter("forma_pago");
-            Date fecha_hoy = Calendar.getInstance().getTime();
-            Compra compra = new Compra(user.getId_usuario(),fecha_hoy,forma_pago);//provicionalmente enviamos 2, es el unico cliente
-            compra.setDireccion_envio((String)request.getParameter("direccion_envio"));
-            compra.setMonto_total(carrito.getMonto_total());
-            System.out.println("Direccion de envio de la compra"+compra.getDireccion_envio());
-            if(request.getParameter("numero_tarjeta") != null) compra.setNumero_tarjeta(Integer.parseInt(request.getParameter("numero_tarjeta")));
-            else compra.setNumero_tarjeta(0);
-            int id_compra = man.insertar_compra(compra);//se inserta la compra desde el manager, ahora el detalle de la compra
-            for(int i = 0 ; i < carrito.size() ; i ++){
-                //por cada producto del carrito insertaremos el producto y la cantidad comprada en la tabla compra_detalle con un unico id de compra
-                man.insertar_compra_detalle(id_compra, carrito.get(i).getId_producto(),carrito.get(i).getCantidad_compra());
+            if(request.getParameter("confirmar_compra").equals("si")){
+                ListaProductos carrito = (ListaProductos)session.getAttribute("carrito");
+                if (carrito.size() == 0) throw new Exception("No se puede realizar la compra si el carrito esta vacio"); 
+                ManagerDB man = new ManagerDB();
+                String forma_pago = (String) request.getParameter("forma_pago");
+                Calendar fecha_hoy = Calendar.getInstance();
+                Compra compra = new Compra(user.getId_usuario(),fecha_hoy,forma_pago);//provicionalmente enviamos 2, es el unico cliente
+                compra.setDireccion_envio((String)request.getParameter("direccion_envio"));
+                compra.setMonto_total(carrito.getMonto_total());
+                System.out.println("Direccion de envio de la compra"+compra.getDireccion_envio());
+                if(request.getParameter("numero_tarjeta") != null && request.getParameter("numero_tarjeta").length() <= 16){
+                    compra.setNumero_tarjeta(Integer.parseInt(request.getParameter("numero_tarjeta")));
+                }
+                else compra.setNumero_tarjeta(0);
+                int id_compra = man.insertar_compra(compra);//se inserta la compra desde el manager, ahora el detalle de la compra
+                for(int i = 0 ; i < carrito.size() ; i ++){
+                    //por cada producto del carrito insertaremos el producto y la cantidad comprada en la tabla compra_detalle con un unico id de compra
+                    man.insertar_compra_detalle(id_compra, carrito.get(i).getId_producto(),carrito.get(i).getCantidad_compra());
+                }
+                man.cerrarConexion();
+                carrito = new ListaProductos();
+                session.setAttribute("carrito", carrito);
+                dispatcher = request.getRequestDispatcher("Carrito.jsp");
             }
-            man.cerrarConexion();
-            carrito = new ListaProductos();
-            session.setAttribute("carrito", carrito);
-            dispatcher = request.getRequestDispatcher("Carrito.jsp");
             
         }
         catch(ServletException se){

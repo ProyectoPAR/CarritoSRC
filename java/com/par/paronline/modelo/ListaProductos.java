@@ -81,8 +81,9 @@ public class ListaProductos{
             }
             if(!descripcion.equals("")){
                 query = query + " and p.descripcion like ?";
-                args.add('%'+descripcion+'%');
+                args.add(descripcion);
             }
+            query += " order by p.descripcion asc";
             man.consultar(query, args);
         }
             

@@ -54,7 +54,7 @@ public class ServletABMProducto extends HttpServlet {
                 categorias.getListaCategorias();  
                 if(accion.equals("add")){//si la operacion es agregar
                     String descripcion = request.getParameter("descripcion");//recuperamos la descripcion
-                    double precio = Double.parseDouble(request.getParameter("precio"));//el precio
+                    Double precio = Double.parseDouble(request.getParameter("precio"));//el precio
                     String categoria = request.getParameter("categoria");//la categoria que es el nombre, para insertar debemos usar el id_categoria
                     String imagen = "/ruta/imagen";
                     args.add(descripcion);
@@ -126,6 +126,10 @@ public class ServletABMProducto extends HttpServlet {
             request.setAttribute("mensaje_error", npe.getMessage());
             Logger.getLogger(ServletABMProducto.class.getName()).log(Level.SEVERE, null, npe);
         }
+        catch(NumberFormatException nfe){
+            request.setAttribute("mensaje_error", "El dato ingresado no es numerico");
+            Logger.getLogger(ServletABMProducto.class.getName()).log(Level.SEVERE, null, nfe);
+        }
         catch (Exception ex) {
             request.setAttribute("mensaje_error", ex.getMessage());
             Logger.getLogger(ServletABMProducto.class.getName()).log(Level.SEVERE, null, ex);
@@ -159,7 +163,12 @@ public class ServletABMProducto extends HttpServlet {
         }catch(NullPointerException npe){
             request.setAttribute("mensaje_error", npe.getMessage());
             Logger.getLogger(ServletABMProducto.class.getName()).log(Level.SEVERE, null, npe);
-        }catch (Exception ex) {
+        }
+        catch(NumberFormatException nfe){
+            request.setAttribute("mensaje_error", "El dato ingresado no es numerico");
+            Logger.getLogger(ServletABMProducto.class.getName()).log(Level.SEVERE, null, nfe);
+        }
+        catch (Exception ex) {
             request.setAttribute("mensaje_error", ex.getMessage());
             Logger.getLogger(ServletABMProducto.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -14,7 +14,9 @@ import java.util.Date;
 import javax.sql.rowset.CachedRowSet;
 import com.par.paronline.utils.Conexion;
 import com.par.paronline.modelo.Producto;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 
 /**
@@ -32,10 +34,15 @@ public class PruebaBase {
     String pass = "sate150495";
     ArrayList<Producto> productos = new ArrayList<Producto>();
     public void f() throws SQLException, ClassNotFoundException, Exception{
-           
+            Calendar fecha = Calendar.getInstance();
+            Date date = new Date();
             
-            System.out.println(Calendar.MONTH);
-            System.out.println(Calendar.YEAR);
+            Integer anho = fecha.get(Calendar.YEAR);
+            Integer mes = fecha.get(Calendar.MONTH);
+            Integer dia = fecha.get(Calendar.DAY_OF_MONTH);
+            System.out.println(anho);
+            System.out.println(mes);
+            System.out.println(dia);
     }
     public static void main(String args[]) throws SQLException, ClassNotFoundException, Exception{
         PruebaBase p = new PruebaBase();

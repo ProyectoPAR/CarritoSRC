@@ -58,9 +58,10 @@ public class ServletPro extends HttpServlet {
             //verificamos, primero si la categoria es null, si es asi seleccionaremos todas la categorias, si la descripcion es null no se hace nada
             if(request.getParameter("categoria") == null && request.getParameter("descripcion") == null){
                 categoria = "all";
+                descripcion = "";
                 dispatcher = request.getRequestDispatcher("Producto.jsp");
             }
-            else{//si ninguno de los es null entonces se recuperan del request
+            else{//si ninguno de los dos es null entonces se recuperan del request
                 categoria = request.getParameter("categoria");
                 descripcion = '%'+request.getParameter("descripcion")+'%';
                 dispatcher = request.getRequestDispatcher("Busqueda.jsp");//tambien despacharemos a la pagina de busqueda, dado que se ha elegido una categoria y una descripcion
